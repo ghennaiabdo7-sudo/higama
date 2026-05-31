@@ -524,6 +524,35 @@
                   <input type="text" id="settingsInstagram" class="w-full px-4 py-3 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm">
                 </div>
                 <div class="border-t border-stone-100 pt-4 mt-4">
+                  <h4 class="font-extrabold text-stone-700 text-xs mb-3"><i class="fas fa-database text-teal-600 ml-2"></i>ربط قاعدة بيانات Supabase</h4>
+                  <p class="text-xs text-stone-400 mb-3">أدخل رابط مشروع Supabase والمفتاح العام (anon public) لتفعيل المزامنة السحابية</p>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <label class="block text-sm font-bold text-stone-600 mb-1.5">Supabase URL</label>
+                      <input type="text" id="supabaseUrl" class="w-full px-4 py-3 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm" placeholder="https://xxxxx.supabase.co">
+                    </div>
+                    <div>
+                      <label class="block text-sm font-bold text-stone-600 mb-1.5">Supabase Anon Key</label>
+                      <input type="text" id="supabaseKey" class="w-full px-4 py-3 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm" placeholder="eyJhbGciOiJIUzI1NiIs...">
+                    </div>
+                  </div>
+                  <div class="flex gap-2 mb-4">
+                    <button onclick="connectSupabase()" class="px-4 py-2 rounded-xl bg-teal-600 text-white text-xs font-bold hover:bg-teal-700 transition-all">
+                      <i class="fas fa-plug ml-1"></i>اتصال
+                    </button>
+                    <button onclick="disconnectSupabase()" class="px-4 py-2 rounded-xl bg-red-500 text-white text-xs font-bold hover:bg-red-600 transition-all">
+                      <i class="fas fa-unlink ml-1"></i>فصل
+                    </button>
+                    <button onclick="syncToSupabase()" class="px-4 py-2 rounded-xl bg-sky-600 text-white text-xs font-bold hover:bg-sky-700 transition-all">
+                      <i class="fas fa-upload ml-1"></i>رفع البيانات
+                    </button>
+                    <button onclick="loadFromSupabase()" class="px-4 py-2 rounded-xl bg-amber-500 text-white text-xs font-bold hover:bg-amber-600 transition-all">
+                      <i class="fas fa-download ml-1"></i>سحب البيانات
+                    </button>
+                  </div>
+                  <div id="supabaseStatus" class="text-xs text-stone-400 px-3 py-2 rounded-lg bg-stone-100">⏻ غير متصل. أدخل بيانات الاتصال أعلاه.</div>
+                </div>
+                <div class="border-t border-stone-100 pt-4 mt-4">
                   <h4 class="font-extrabold text-stone-700 text-xs mb-3"><i class="fas fa-key text-teal-600 ml-2"></i>تعديل بيانات دخول المدير</h4>
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <div>
@@ -1358,6 +1387,8 @@
 <!-- ====== TOAST CONTAINER ====== -->
 <div id="toastContainer" class="fixed top-4 left-1/2 -translate-x-1/2 z-[9999] flex flex-col gap-2"></div>
 
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

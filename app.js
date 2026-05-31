@@ -124,6 +124,10 @@ function getData() {
 
 function saveData() {
   localStorage.setItem(DATA_KEY, JSON.stringify(data));
+  // Async sync to Supabase
+  if (typeof saveToSupabase === 'function') {
+    saveToSupabase(data).catch(() => {});
+  }
 }
 
 let data = getData();
@@ -132,8 +136,75 @@ function generateId() {
   return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
 }
 
+/* ====== SUPABASE CONFIG UI ====== */
+function connectSupabase() {
+  const url = document.getElementById('supabaseUrl').value.trim();
+  const key = document.getElementById('supabaseKey').value.trim();
+  if (!url || !key) { showToast('الرجاء إدخال رابط Supabase والمفتاح', 'error'); return; }
+  saveSupabaseConfig(url, key);
+  initSupabase().then(connected => {
+    const status = document.getElementById('supabaseStatus');
+    if (connected) {
+      status.className = 'text-xs text-emerald-600 px-3 py-2 rounded-lg bg-emerald-50';
+      status.innerHTML = '<i class="fas fa-check-circle ml-1"></i>✅ متصل بـ Supabase';
+      showToast('تم الاتصال بـ Supabase بنجاح', 'success');
+      // Load data from Supabase
+      loadFromSupabase().then(remoteData => {
+        if (remoteData) {
+          Object.assign(data, remoteData);
+          saveData();
+          showToast('تم تحميل البيانات من السحابة', 'success');
+          if (currentUser.role === 'admin') renderAllAdmin();
+        }
+      });
+    } else {
+      status.className = 'text-xs text-red-500 px-3 py-2 rounded-lg bg-red-50';
+      status.innerHTML = '<i class="fas fa-times-circle ml-1"></i>❌ فشل الاتصال';
+    }
+  });
+}
+
+function disconnectSupabase() {
+  clearSupabaseConfig();
+  supabaseClient = null;
+  supabaseConnected = false;
+  const status = document.getElementById('supabaseStatus');
+  status.className = 'text-xs text-stone-400 px-3 py-2 rounded-lg bg-stone-100';
+  status.innerHTML = '⏻ غير متصل';
+  showToast('تم فصل Supabase', 'info');
+}
+
+function syncToSupabase() {
+  if (typeof fullSyncToSupabase === 'function') fullSyncToSupabase();
+}
+
+function loadFromSupabase() {
+  if (typeof fullLoadFromSupabase === 'function') return fullLoadFromSupabase();
+  return Promise.resolve(false);
+}
+
 /* ====== INIT / ROUTING ====== */
 document.addEventListener('DOMContentLoaded', function() {
+  // Initialize Supabase
+  initSupabase().then(connected => {
+    if (connected) {
+      return loadFromSupabase().then(remoteData => {
+        if (remoteData) Object.assign(data, remoteData);
+      });
+    }
+  }).catch(() => {});
+
+  // Populate Supabase config fields if saved
+  const config = getSupabaseConfig();
+  if (config) {
+    const urlField = document.getElementById('supabaseUrl');
+    const keyField = document.getElementById('supabaseKey');
+    if (urlField && keyField) {
+      urlField.value = config.url;
+      keyField.value = config.anonKey;
+    }
+  }
+
   const params = new URLSearchParams(window.location.search);
   if (params.get('view') === 'customer') {
     showView('customerView');
@@ -2048,6 +2119,31 @@ function populateAdminSettings() {
   // بيانات المدير
   document.getElementById('settingsAdminUser').value = s.adminUser || 'admin';
   document.getElementById('settingsAdminPass').value = s.adminPass || 'admin123';
+
+  // Supabase connection status
+  updateSupabaseStatusUI();
+}
+
+function updateSupabaseStatusUI() {
+  const config = getSupabaseConfig();
+  const status = document.getElementById('supabaseStatus');
+  const urlField = document.getElementById('supabaseUrl');
+  const keyField = document.getElementById('supabaseKey');
+  if (!status) return;
+  if (config) {
+    if (urlField) urlField.value = config.url;
+    if (keyField) keyField.value = config.anonKey;
+    if (supabaseConnected) {
+      status.className = 'text-xs text-emerald-600 px-3 py-2 rounded-lg bg-emerald-50';
+      status.innerHTML = '<i class="fas fa-check-circle ml-1"></i>✅ متصل بـ Supabase';
+    } else {
+      status.className = 'text-xs text-amber-600 px-3 py-2 rounded-lg bg-amber-50';
+      status.innerHTML = '<i class="fas fa-exclamation-triangle ml-1"></i>⚠️ الإعدادات محفوظة لكن غير متصل';
+    }
+  } else {
+    status.className = 'text-xs text-stone-400 px-3 py-2 rounded-lg bg-stone-100';
+    status.innerHTML = '⏻ غير متصل. أدخل بيانات الاتصال أعلاه.';
+  }
 }
 
 /* ====== Loading settings on customer view ====== */
