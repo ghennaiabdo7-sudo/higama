@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مركز الزمرد للحجامة والعناية الجسدية</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          teal: {
+            50: '#f0fdfa',
+            100: '#ccfbf1',
+            500: '#14b8a6',
+            600: '#0d9488',
+            700: '#0f766e',
+            800: '#115e59',
+            900: '#134e4a',
+          },
+          amber: {
+            50: '#fffbeb',
+            100: '#fef3c7',
+            500: '#f59e0b',
+            600: '#d97706',
+            700: '#b55607',
+          }
+        },
+        fontFamily: {
+          cairo: ['Cairo', 'sans-serif'],
+        }
+      }
+    }
+  }
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="font-cairo bg-stone-50 min-h-screen text-stone-900">
+
+<div id="app">
+
+  <!-- ====== LOGIN VIEW ====== -->
+  <div id="loginView" class="view active">
+    <div class="min-h-screen flex items-center justify-center p-4" style="background: linear-gradient(135deg, #0f766e 0%, #0d9488 50%, #115e59 100%);">
+      <div class="w-full max-w-md">
+        <div class="text-center mb-8">
+          <div class="w-20 h-20 mx-auto mb-4 rounded-3xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-lg transition-transform hover:scale-105 duration-300">
+            <i class="fas fa-leaf text-teal-200 text-3xl"></i>
+          </div>
+          <h1 class="text-3xl font-extrabold text-white mb-2 tracking-wide">مركز الزمرد للاستشفاء</h1>
+          <p class="text-teal-100/70 text-sm font-medium">نظام الإدارة الطبي والعلاجي المتكامل</p>
+        </div>
+        
+        <div class="glass-card p-1.5 rounded-2xl mb-4 bg-white/95 shadow-xl">
+          <div class="flex bg-stone-100 rounded-xl p-1">
+            <button class="login-toggle flex-1 py-3 px-4 rounded-xl text-sm font-bold transition-all duration-300 active" data-role="admin">
+              <i class="fas fa-user-shield ml-2"></i>دخول المدير
+            </button>
+            <button class="login-toggle flex-1 py-3 px-4 rounded-xl text-sm font-bold transition-all duration-300" data-role="therapist">
+              <i class="fas fa-user-md ml-2"></i>دخول المعالج
+            </button>
+          </div>
+        </div>
+
+        <div class="glass-card p-8 rounded-3xl bg-white shadow-2xl" id="loginPanel">
+          <div class="text-center mb-6">
+            <div class="w-16 h-16 mx-auto mb-3 rounded-2xl bg-teal-50 flex items-center justify-center">
+              <i class="fas fa-user-shield text-teal-600 text-2xl" id="loginIcon"></i>
+            </div>
+            <h2 class="text-xl font-bold text-stone-800" id="loginTitle">تسجيل دخول المدير</h2>
+          </div>
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-bold text-stone-600 mb-1.5">اسم المستخدم</label>
+              <div class="relative">
+                <i class="fas fa-user absolute right-4 top-1/2 -translate-y-1/2 text-stone-400"></i>
+                <input type="text" id="loginUser" class="w-full pr-12 pl-4 py-3.5 rounded-xl border border-stone-200 bg-stone-50/50 outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all text-sm" placeholder="أدخل اسم المستخدم">
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-bold text-stone-600 mb-1.5">كلمة المرور</label>
+              <div class="relative">
+                <i class="fas fa-lock absolute right-4 top-1/2 -translate-y-1/2 text-stone-400"></i>
+                <input type="password" id="loginPass" class="w-full pr-12 pl-4 py-3.5 rounded-xl border border-stone-200 bg-stone-50/50 outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all text-sm" placeholder="أدخل كلمة المرور">
+              </div>
+            </div>
+            <button id="loginBtn" class="w-full py-4 rounded-xl text-white font-bold text-sm transition-all duration-300 shadow-lg shadow-teal-700/20 hover:shadow-teal-700/35 hover:-translate-y-0.5 active:translate-y-0" style="background: linear-gradient(135deg, #0d9488, #0f766e);">
+              <i class="fas fa-sign-in-alt ml-2"></i>تسجيل الدخول
+            </button>
+            <div id="loginError" class="text-red-500 text-sm font-bold text-center hidden"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== ADMIN VIEW ====== -->
+  <div id="adminView" class="view">
+    <div class="flex h-screen overflow-hidden">
+      <!-- Sidebar -->
+      <aside id="adminSidebar" class="w-72 bg-slate-900 flex flex-col flex-shrink-0 overflow-y-auto border-l border-slate-800">
+        <div class="p-6 border-b border-slate-800">
+          <div class="flex items-center gap-3.5">
+            <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center shadow-lg shadow-teal-500/25">
+              <i class="fas fa-leaf text-white text-lg"></i>
+            </div>
+            <div>
+              <h2 class="font-extrabold text-white text-sm">لوحة الإدارة</h2>
+              <p class="text-xs text-teal-400 font-medium">مركز الزمرد للاستشفاء</p>
+            </div>
+          </div>
+        </div>
+        <nav class="flex-1 p-4 space-y-1.5">
+          <button class="admin-nav w-full text-right px-4 py-3.5 rounded-xl text-sm font-bold text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all active" data-section="dashboard">
+            <i class="fas fa-chart-pie ml-3 w-5 text-center text-teal-500"></i>الإحصائيات والمالية
+          </button>
+          <button class="admin-nav w-full text-right px-4 py-3.5 rounded-xl text-sm font-bold text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all" data-section="bookings">
+            <i class="fas fa-calendar-check ml-3 w-5 text-center text-teal-500"></i>مركز الحجوزات
+            <span id="adminPendingBadge" class="mr-auto float-left px-2 py-0.5 rounded-full bg-amber-500 text-white text-xs font-bold hidden">0</span>
+          </button>
+          <button class="admin-nav w-full text-right px-4 py-3.5 rounded-xl text-sm font-bold text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all" data-section="expenses">
+            <i class="fas fa-receipt ml-3 w-5 text-center text-teal-500"></i>المصاريف الثابتة
+          </button>
+          <button class="admin-nav w-full text-right px-4 py-3.5 rounded-xl text-sm font-bold text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all" data-section="therapists">
+            <i class="fas fa-users-cog ml-3 w-5 text-center text-teal-500"></i>المعالجون والرواتب
+          </button>
+          <button class="admin-nav w-full text-right px-4 py-3.5 rounded-xl text-sm font-bold text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all" data-section="customers">
+            <i class="fas fa-address-book ml-3 w-5 text-center text-teal-500"></i>إدارة الزبائن والملفات
+          </button>
+          <button class="admin-nav w-full text-right px-4 py-3.5 rounded-xl text-sm font-bold text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all" data-section="inventory">
+            <i class="fas fa-boxes ml-3 w-5 text-center text-teal-500"></i>المخزون والمنتجات
+          </button>
+          <button class="admin-nav w-full text-right px-4 py-3.5 rounded-xl text-sm font-bold text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all" data-section="services">
+            <i class="fas fa-concierge-bell ml-3 w-5 text-center text-teal-500"></i>الخدمات العلاجية
+          </button>
+          <button class="admin-nav w-full text-right px-4 py-3.5 rounded-xl text-sm font-bold text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all" data-section="settings">
+            <i class="fas fa-sliders ml-3 w-5 text-center text-teal-500"></i>إعدادات المركز
+          </button>
+          <button class="admin-nav w-full text-right px-4 py-3.5 rounded-xl text-sm font-bold text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all" data-section="backup">
+            <i class="fas fa-database ml-3 w-5 text-center text-teal-500"></i>النسخ الاحتياطي
+          </button>
+        </nav>
+        <div class="p-4 border-t border-slate-800">
+          <button id="adminLogout" class="w-full py-3 rounded-xl text-sm font-bold text-red-400 hover:bg-red-950/30 hover:text-red-300 transition-all">
+            <i class="fas fa-sign-out-alt ml-2"></i>تسجيل الخروج
+          </button>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="flex-1 overflow-y-auto bg-stone-50 p-8">
+        <!-- Mobile Top Bar -->
+        <div class="lg:hidden flex items-center justify-between bg-white border border-stone-200/60 p-4 mb-6 rounded-2xl shadow-sm">
+          <button onclick="toggleMobileSidebar()" class="w-10 h-10 rounded-xl bg-stone-50 text-stone-600 flex items-center justify-center border border-stone-200 hover:bg-stone-100 transition-all">
+            <i class="fas fa-bars"></i>
+          </button>
+          <span class="font-black text-stone-800 text-sm">لوحة تحكم المدير</span>
+          <div class="w-10"></div>
+        </div>
+        <!-- Dashboard Section -->
+        <div id="adminDashboardSection" class="admin-section">
+          <div class="flex items-center justify-between mb-8">
+            <div>
+              <h1 class="text-3xl font-extrabold text-stone-800 mb-1">لوحة الإحصائيات العامة</h1>
+              <p class="text-sm text-stone-500 font-medium">متابعة فورية لنشاط المركز والتدفقات المالية</p>
+            </div>
+            <div class="flex gap-3">
+              <button onclick="generateCustomerLink()" class="px-5 py-3 rounded-xl bg-teal-600 text-white text-sm font-bold hover:bg-teal-700 transition-all shadow-md shadow-teal-600/10 hover:shadow-teal-600/25">
+                <i class="fas fa-qrcode ml-2"></i>رابط الزبون
+              </button>
+              <button onclick="exportBackup()" class="px-5 py-3 rounded-xl bg-stone-200 text-stone-700 text-sm font-bold hover:bg-stone-300 transition-all">
+                <i class="fas fa-download ml-2"></i>تصدير البيانات
+              </button>
+            </div>
+          </div>
+
+          <!-- Stats Cards Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="stats-card glass-card p-6 bg-white border-r-4 border-teal-500">
+              <div class="flex items-center justify-between mb-4">
+                <span class="text-stone-500 text-sm font-bold">إجمالي الحجوزات</span>
+                <div class="w-11 h-11 rounded-2xl bg-teal-50 flex items-center justify-center">
+                  <i class="fas fa-calendar text-teal-600 text-lg"></i>
+                </div>
+              </div>
+              <h3 class="text-3xl font-black text-stone-800" id="totalBookings">0</h3>
+            </div>
+            <div class="stats-card glass-card p-6 bg-white border-r-4 border-emerald-500">
+              <div class="flex items-center justify-between mb-4">
+                <span class="text-stone-500 text-sm font-bold">الدخل الإجمالي (رأس المال)</span>
+                <div class="w-11 h-11 rounded-2xl bg-emerald-50 flex items-center justify-center">
+                  <i class="fas fa-coins text-emerald-600 text-lg"></i>
+                </div>
+              </div>
+              <h3 class="text-3xl font-black text-stone-800"><span id="totalCapital">0</span> <span class="text-sm font-bold text-stone-400">DA</span></h3>
+            </div>
+            <div class="stats-card glass-card p-6 bg-white border-r-4 border-amber-600">
+              <div class="flex items-center justify-between mb-4">
+                <span class="text-stone-500 text-sm font-bold">صافي الفائدة (الأرباح)</span>
+                <div class="w-11 h-11 rounded-2xl bg-amber-50 flex items-center justify-center">
+                  <i class="fas fa-chart-line text-amber-600 text-lg"></i>
+                </div>
+              </div>
+              <h3 class="text-3xl font-black text-stone-800"><span id="netProfit">0</span> <span class="text-sm font-bold text-stone-400">DA</span></h3>
+            </div>
+            <div class="stats-card glass-card p-6 bg-white border-r-4 border-purple-500">
+              <div class="flex items-center justify-between mb-4">
+                <span class="text-stone-500 text-sm font-bold">قيد الانتظار والموافقة</span>
+                <div class="w-11 h-11 rounded-2xl bg-purple-50 flex items-center justify-center">
+                  <i class="fas fa-clock text-purple-600 text-lg"></i>
+                </div>
+              </div>
+              <h3 class="text-3xl font-black text-stone-800" id="pendingBookings">0</h3>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Recent Bookings -->
+            <div class="glass-card p-6 bg-white lg:col-span-2">
+              <h3 class="font-extrabold text-stone-800 text-lg mb-4"><i class="fas fa-history text-teal-600 ml-2"></i>أحدث الحجوزات المسجلة</h3>
+              <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                  <thead>
+                    <tr class="text-stone-500 border-b border-stone-100">
+                      <th class="text-right pb-3 font-bold">الزبون</th>
+                      <th class="text-right pb-3 font-bold">الخدمة</th>
+                      <th class="text-right pb-3 font-bold">التاريخ والوقت</th>
+                      <th class="text-right pb-3 font-bold">الحالة</th>
+                      <th class="text-right pb-3 font-bold">المبلغ</th>
+                    </tr>
+                  </thead>
+                  <tbody id="adminRecentBookings"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Financial visual chart & therapists -->
+            <div class="space-y-6">
+              <div class="glass-card p-6 bg-white">
+                <h3 class="font-extrabold text-stone-800 text-base mb-4"><i class="fas fa-pie-chart text-teal-600 ml-2"></i>توزيع الأرباح والتدفقات المالية</h3>
+                <div class="visual-chart-container py-2 flex flex-col items-center">
+                  <!-- Custom visual SVG donut chart built dynamically -->
+                  <div class="relative w-36 h-36 flex items-center justify-center mb-4">
+                    <svg viewBox="0 0 36 36" class="w-full h-full transform -rotate-90">
+                      <circle cx="18" cy="18" r="15.915" fill="none" stroke="#f1f5f9" stroke-width="3"></circle>
+                      <circle id="chartNetCircle" cx="18" cy="18" r="15.915" fill="none" stroke="#d97706" stroke-width="3" stroke-dasharray="0 100" stroke-dashoffset="0" class="transition-all duration-700"></circle>
+                      <circle id="chartCommCircle" cx="18" cy="18" r="15.915" fill="none" stroke="#0d9488" stroke-width="3" stroke-dasharray="0 100" stroke-dashoffset="0" class="transition-all duration-700"></circle>
+                      <circle id="chartExpCircle" cx="18" cy="18" r="15.915" fill="none" stroke="#ef4444" stroke-width="3" stroke-dasharray="0 100" stroke-dashoffset="0" class="transition-all duration-700"></circle>
+                    </svg>
+                    <div class="absolute text-center">
+                      <span class="text-stone-400 text-2xs block font-bold">صافي الأرباح</span>
+                      <span id="chartProfitPercent" class="text-lg font-black text-amber-600">0%</span>
+                    </div>
+                  </div>
+                  <div class="w-full space-y-2 text-xs font-bold">
+                    <div class="flex justify-between items-center p-1.5 rounded-lg hover:bg-stone-50">
+                      <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-amber-600 block"></span>صافي فائدة المركز</span>
+                      <span id="chartProfitVal" class="text-stone-700">0 DA (0%)</span>
+                    </div>
+                    <div class="flex justify-between items-center p-1.5 rounded-lg hover:bg-stone-50">
+                      <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-teal-600 block"></span>عمولات المعالجين</span>
+                      <span id="chartCommVal" class="text-stone-700">0 DA (0%)</span>
+                    </div>
+                    <div class="flex justify-between items-center p-1.5 rounded-lg hover:bg-stone-50">
+                      <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-red-500 block"></span>المصاريف والمواد</span>
+                      <span id="chartExpVal" class="text-stone-700">0 DA (0%)</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="glass-card p-6 bg-white">
+                <h3 class="font-extrabold text-stone-800 text-base mb-4"><i class="fas fa-users text-teal-600 ml-2"></i>المعالجون النشطون</h3>
+                <div id="adminActiveTherapists" class="divide-y divide-stone-100"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Expenses Section -->
+        <div id="adminExpensesSection" class="admin-section hidden">
+          <div class="flex items-center justify-between mb-8">
+            <div>
+              <h1 class="text-3xl font-extrabold text-stone-800 mb-1">إدارة المصاريف الثابتة</h1>
+              <p class="text-sm text-stone-500 font-medium">تسجيل وتتبع كافة التكاليف والمصاريف التشغيلية للمركز</p>
+            </div>
+            <button onclick="showModal('expenseModal')" class="px-5 py-3 rounded-xl bg-teal-600 text-white text-sm font-bold hover:bg-teal-700 transition-all shadow-md">
+              <i class="fas fa-plus ml-2"></i>إضافة مصروف جديد
+            </button>
+          </div>
+          <div class="glass-card p-6 bg-white overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="text-stone-500 border-b border-stone-100">
+                  <th class="text-right pb-3 font-bold">البيان / نوع المصروف</th>
+                  <th class="text-right pb-3 font-bold">المبلغ</th>
+                  <th class="text-right pb-3 font-bold">الشهر</th>
+                  <th class="text-right pb-3 font-bold">السنة</th>
+                  <th class="text-right pb-3 font-bold text-left">الإجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="expensesTable"></tbody>
+            </table>
+          </div>
+          <div class="mt-6 glass-card p-6 bg-white">
+            <div class="flex items-center justify-between">
+              <span class="text-stone-600 font-bold text-base">إجمالي المصاريف الثابتة المسجلة:</span>
+              <span class="text-2xl font-black text-red-500"><span id="totalFixedExpenses">0</span> DA</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Therapists Section -->
+        <div id="adminTherapistsSection" class="admin-section hidden">
+          <div class="flex items-center justify-between mb-8">
+            <div>
+              <h1 class="text-3xl font-extrabold text-stone-800 mb-1">إدارة شؤون المعالجين</h1>
+              <p class="text-sm text-stone-500 font-medium">متابعة حسابات المعالجين، العمولات، وإجراء الخصومات والتسويات</p>
+            </div>
+            <button onclick="showModal('therapistModal')" class="px-5 py-3 rounded-xl bg-teal-600 text-white text-sm font-bold hover:bg-teal-700 transition-all shadow-md">
+              <i class="fas fa-plus ml-2"></i>إضافة معالج جديد
+            </button>
+          </div>
+          <div class="glass-card p-6 bg-white overflow-x-auto mb-8">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="text-stone-500 border-b border-stone-100">
+                  <th class="text-right pb-3 font-bold">الاسم الكامل</th>
+                  <th class="text-right pb-3 font-bold">اسم المستخدم</th>
+                  <th class="text-right pb-3 font-bold">نسبة العمولة</th>
+                  <th class="text-right pb-3 font-bold">رقم الهاتف</th>
+                  <th class="text-right pb-3 font-bold">الجنس</th>
+                  <th class="text-right pb-3 font-bold">التقييم</th>
+                  <th class="text-right pb-3 font-bold">الحجوزات</th>
+                  <th class="text-right pb-3 font-bold">إجمالي الإيراد</th>
+                  <th class="text-right pb-3 font-bold">الفائدة المستحقة</th>
+                  <th class="text-right pb-3 text-left font-bold">الإجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="therapistsTable"></tbody>
+            </table>
+          </div>
+
+          <!-- Deductions History Sub-Section -->
+          <div class="glass-card p-6 bg-white">
+            <h3 class="font-extrabold text-stone-800 text-lg mb-4"><i class="fas fa-minus-circle text-red-500 ml-2"></i>سجل الخصومات والتسويات المالية</h3>
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="text-stone-500 border-b border-stone-100">
+                    <th class="text-right pb-3 font-bold">المعالج</th>
+                    <th class="text-right pb-3 font-bold">المبلغ المخصوم</th>
+                    <th class="text-right pb-3 font-bold">السبب والتسوية</th>
+                    <th class="text-right pb-3 font-bold">التاريخ</th>
+                  </tr>
+                </thead>
+                <tbody id="adminDeductionsHistoryTable">
+                  <tr>
+                    <td colspan="4" class="text-center text-stone-400 py-6">لا توجد خصومات مسجلة بعد</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Inventory Section -->
+        <div id="adminInventorySection" class="admin-section hidden">
+          <div class="flex items-center justify-between mb-8">
+            <div>
+              <h1 class="text-3xl font-extrabold text-stone-800 mb-1">مخزون المستلزمات الطبية</h1>
+              <p class="text-sm text-stone-500 font-medium">متابعة كميات الزيوت، الكؤوس والمواد المستهلكة في الجلسات</p>
+            </div>
+            <button onclick="showModal('inventoryModal')" class="px-5 py-3 rounded-xl bg-teal-600 text-white text-sm font-bold hover:bg-teal-700 transition-all shadow-md">
+              <i class="fas fa-plus ml-2"></i>إضافة منتج جديد
+            </button>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8" id="inventoryCards"></div>
+          <div class="glass-card p-6 bg-white overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="text-stone-500 border-b border-stone-100">
+                  <th class="text-right pb-3 font-bold">اسم المنتج</th>
+                  <th class="text-right pb-3 font-bold">الكمية المتوفرة</th>
+                  <th class="text-right pb-3 font-bold">الحجم (مل)</th>
+                  <th class="text-right pb-3 font-bold">سعر تكلفة الوحدة</th>
+                  <th class="text-right pb-3 font-bold">الحالة</th>
+                  <th class="text-right pb-3 text-left font-bold">الإجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="inventoryTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Services Section -->
+        <div id="adminServicesSection" class="admin-section hidden">
+          <div class="flex items-center justify-between mb-8">
+            <div>
+              <h1 class="text-3xl font-extrabold text-stone-800 mb-1">دليل الخدمات العلاجية</h1>
+              <p class="text-sm text-stone-500 font-medium">إعداد جلسات الحجامة والمساج وربطها التلقائي بالمنتجات المستهلكة</p>
+            </div>
+            <button onclick="showModal('serviceModal')" class="px-5 py-3 rounded-xl bg-teal-600 text-white text-sm font-bold hover:bg-teal-700 transition-all shadow-md">
+              <i class="fas fa-plus ml-2"></i>إضافة خدمة جديدة
+            </button>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="servicesGrid"></div>
+        </div>
+
+        <!-- Bookings Section -->
+        <div id="adminBookingsSection" class="admin-section hidden">
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h1 class="text-3xl font-extrabold text-stone-800 mb-1">مركز إدارة الحجوزات</h1>
+              <p class="text-sm text-stone-500 font-medium">مراجعة طلبات الحجز، تأكيدها، تعيين المعالجين والمتابعة الطبية</p>
+            </div>
+          </div>
+          
+          <!-- Advanced Filtering Tabs -->
+          <div class="glass-card p-1.5 rounded-2xl bg-white mb-6 flex flex-wrap gap-1 shadow-sm">
+            <button onclick="filterAdminBookings('all')" class="admin-filter-btn flex-1 py-3 px-4 rounded-xl text-xs font-bold transition-all bg-teal-600 text-white" id="filterBtn_all">جميع الحجوزات</button>
+            <button onclick="filterAdminBookings('pending')" class="admin-filter-btn flex-1 py-3 px-4 rounded-xl text-xs font-bold text-stone-600 hover:bg-stone-50 transition-all" id="filterBtn_pending">بانتظار الموافقة</button>
+            <button onclick="filterAdminBookings('confirmed')" class="admin-filter-btn flex-1 py-3 px-4 rounded-xl text-xs font-bold text-stone-600 hover:bg-stone-50 transition-all" id="filterBtn_confirmed">الحجوزات المؤكدة</button>
+            <button onclick="filterAdminBookings('completed')" class="admin-filter-btn flex-1 py-3 px-4 rounded-xl text-xs font-bold text-stone-600 hover:bg-stone-50 transition-all" id="filterBtn_completed">الحجوزات المكتملة</button>
+            <button onclick="filterAdminBookings('cancelled')" class="admin-filter-btn flex-1 py-3 px-4 rounded-xl text-xs font-bold text-stone-600 hover:bg-stone-50 transition-all" id="filterBtn_cancelled">الحجوزات الملغاة</button>
+          </div>
+
+          <div class="glass-card p-6 bg-white overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="text-stone-500 border-b border-stone-100">
+                  <th class="text-right pb-3 font-bold">الزبون</th>
+                  <th class="text-right pb-3 font-bold">الخدمة المطلوبة</th>
+                  <th class="text-right pb-3 font-bold">المعالج المكلف</th>
+                  <th class="text-right pb-3 font-bold">التاريخ والتوقيت</th>
+                  <th class="text-right pb-3 font-bold">الحالة</th>
+                  <th class="text-right pb-3 font-bold">المبلغ النهائي</th>
+                  <th class="text-right pb-3 text-left font-bold">إجراءات التحكم</th>
+                </tr>
+              </thead>
+              <tbody id="adminAllBookings"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Customers Section -->
+        <div id="adminCustomersSection" class="admin-section hidden">
+          <div class="flex items-center justify-between mb-8">
+            <div>
+              <h1 class="text-3xl font-extrabold text-stone-800 mb-1">دليل الزبائن والملفات الطبية</h1>
+              <p class="text-sm text-stone-500 font-medium">متابعة ملفات جميع المرضى المسجلين، حجوزاتهم وتقاريرهم الطبية</p>
+            </div>
+            <!-- Search Input -->
+            <div class="relative w-72">
+              <i class="fas fa-search absolute right-4 top-1/2 -translate-y-1/2 text-stone-400"></i>
+              <input type="text" id="adminCustomersSearch" oninput="renderAdminCustomers()" class="w-full pr-12 pl-4 py-3 rounded-xl border border-stone-200 bg-white outline-none text-sm" placeholder="ابحث عن زبون باسمه أو هاتفه...">
+            </div>
+          </div>
+          <div class="glass-card p-6 bg-white overflow-x-auto shadow-md">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="text-stone-500 border-b border-stone-100">
+                  <th class="text-right pb-3 font-bold">الاسم الكامل</th>
+                  <th class="text-right pb-3 font-bold">رقم الهاتف</th>
+                  <th class="text-right pb-3 font-bold">الجنس</th>
+                  <th class="text-right pb-3 font-bold">اسم المستخدم</th>
+                  <th class="text-right pb-3 font-bold">عدد الحجوزات</th>
+                  <th class="text-right pb-3 text-left font-bold">الإجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="adminCustomersTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Settings Section -->
+        <div id="adminSettingsSection" class="admin-section hidden">
+          <div class="flex items-center justify-between mb-8">
+            <div>
+              <h1 class="text-3xl font-extrabold text-stone-800 mb-1">الإعدادات العامة للمركز</h1>
+              <p class="text-sm text-stone-500 font-medium">تعديل بيانات الاتصال، أوقات الدوام، وروابط الخرائط والشبكات الاجتماعية</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="glass-card p-6 bg-white">
+              <h3 class="font-extrabold text-stone-800 mb-6 border-b border-stone-100 pb-3"><i class="fas fa-edit text-teal-600 ml-2"></i>تعديل معلومات وتفاصيل المركز</h3>
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-sm font-bold text-stone-600 mb-1.5">شعار المركز (Logo)</label>
+                  <input type="file" accept="image/*" id="settingsLogo" onchange="compressAndSetImage(this, 'logoPreview', 'settingsLogoInput')" class="w-full text-sm text-stone-500 file:ml-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100">
+                  <div class="mt-3 flex items-center gap-3">
+                    <div id="logoPreview" class="w-16 h-16 rounded-2xl bg-stone-100 flex items-center justify-center overflow-hidden border border-stone-200">
+                      <i class="fas fa-image text-stone-400"></i>
+                    </div>
+                    <button onclick="document.getElementById('settingsLogo').click()" class="text-xs font-bold text-teal-600 hover:underline">تعديل الشعار</button>
+                  </div>
+                  <input type="hidden" id="settingsLogoInput">
+                </div>
+                <div>
+                  <label class="block text-sm font-bold text-stone-600 mb-1.5">نبذة تعريفية عن المركز</label>
+                  <textarea id="settingsBio" rows="3" class="w-full px-4 py-3 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm leading-relaxed"></textarea>
+                </div>
+                <div>
+                  <label class="block text-sm font-bold text-stone-600 mb-1.5">ساعات وأيام العمل</label>
+                  <input type="text" id="settingsHours" class="w-full px-4 py-3 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm" placeholder="مثال: السبت - الخميس 09:00 - 20:00">
+                </div>
+                <div>
+                  <label class="block text-sm font-bold text-stone-600 mb-1.5">رابط خرائط جوجل (Google Maps)</label>
+                  <input type="text" id="settingsMap" class="w-full px-4 py-3 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm">
+                </div>
+                <div>
+                  <label class="block text-sm font-bold text-stone-600 mb-1.5">رقم هاتف الواتساب (WhatsApp)</label>
+                  <input type="text" id="settingsWhatsapp" class="w-full px-4 py-3 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm" placeholder="مثال: 213XXXXXXXXX">
+                </div>
+                <div>
+                  <label class="block text-sm font-bold text-stone-600 mb-1.5">رابط صفحة فيسبوك</label>
+                  <input type="text" id="settingsFacebook" class="w-full px-4 py-3 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm">
+                </div>
+                <div>
+                  <label class="block text-sm font-bold text-stone-600 mb-1.5">رابط صفحة انستغرام</label>
+                  <input type="text" id="settingsInstagram" class="w-full px-4 py-3 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm">
+                </div>
+                <div class="border-t border-stone-100 pt-4 mt-4">
+                  <h4 class="font-extrabold text-stone-700 text-xs mb-3"><i class="fas fa-key text-teal-600 ml-2"></i>تعديل بيانات دخول المدير</h4>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <label class="block text-sm font-bold text-stone-600 mb-1.5">اسم المستخدم للمدير</label>
+                      <input type="text" id="settingsAdminUser" class="w-full px-4 py-3 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm" placeholder="admin">
+                    </div>
+                    <div>
+                      <label class="block text-sm font-bold text-stone-600 mb-1.5">كلمة مرور المدير</label>
+                      <input type="password" id="settingsAdminPass" class="w-full px-4 py-3 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm" placeholder="admin123">
+                    </div>
+                  </div>
+                </div>
+                <button onclick="saveSettings()" class="w-full py-4 rounded-xl bg-teal-600 text-white font-bold text-sm hover:bg-teal-700 transition-all shadow-md">
+                  <i class="fas fa-save ml-2"></i>حفظ كافة الإعدادات
+                </button>
+              </div>
+            </div>
+            
+            <div class="glass-card p-6 bg-white">
+              <h3 class="font-extrabold text-stone-800 mb-4 pb-3 border-b border-stone-100"><i class="fas fa-eye text-teal-600 ml-2"></i>معاينة واجهة الحجز للزبائن</h3>
+              <div id="settingsPreview" class="text-center p-6 bg-stone-50 rounded-2xl border border-dashed border-stone-200">
+                <p class="text-stone-400 text-sm font-bold">تظهر هنا بعد حفظ الإعدادات</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Backup Section -->
+        <div id="adminBackupSection" class="admin-section hidden">
+          <div class="flex items-center justify-between mb-8">
+            <div>
+              <h1 class="text-3xl font-extrabold text-stone-800 mb-1">النسخ الاحتياطي للأمان</h1>
+              <p class="text-sm text-stone-500 font-medium">تصدير واستعادة جميع ملفات الحجوزات والمخزون والبيانات الطبية</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="glass-card p-8 text-center bg-white">
+              <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-teal-50 flex items-center justify-center">
+                <i class="fas fa-download text-teal-600 text-2xl"></i>
+              </div>
+              <h3 class="font-bold text-stone-800 text-lg mb-2">تصدير قاعدة البيانات</h3>
+              <p class="text-stone-500 text-sm mb-6">تحميل نسخة مشفرة متكاملة من جميع بيانات المركز كملف JSON</p>
+              <button onclick="exportBackup()" class="w-full py-4 rounded-xl bg-teal-600 text-white font-bold text-sm hover:bg-teal-700 transition-all">
+                <i class="fas fa-file-export ml-2"></i>بدء تصدير البيانات
+              </button>
+            </div>
+            <div class="glass-card p-8 text-center bg-white">
+              <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-emerald-50 flex items-center justify-center">
+                <i class="fas fa-upload text-emerald-600 text-2xl"></i>
+              </div>
+              <h3 class="font-bold text-stone-800 text-lg mb-2">استيراد قاعدة البيانات</h3>
+              <p class="text-stone-500 text-sm mb-6">رفع ملف النسخة الاحتياطية لتحديث وحفظ السجلات السابقة</p>
+              <input type="file" accept=".json" id="importFile" onchange="importBackup(event)" class="hidden">
+              <button onclick="document.getElementById('importFile').click()" class="w-full py-4 rounded-xl bg-emerald-600 text-white font-bold text-sm hover:bg-emerald-600 transition-all">
+                <i class="fas fa-file-import ml-2"></i>بدء استيراد البيانات
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- ====== THERAPIST VIEW ====== -->
+  <div id="therapistView" class="view">
+    <div class="flex h-screen overflow-hidden">
+      <aside id="therapistSidebar" class="w-72 bg-slate-900 flex flex-col flex-shrink-0 overflow-y-auto border-l border-slate-800">
+        <div class="p-6 border-b border-slate-800">
+          <div class="flex items-center gap-3.5">
+            <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+              <i class="fas fa-user-md text-white text-lg"></i>
+            </div>
+            <div>
+              <h2 class="font-extrabold text-white text-sm" id="therapistName">المعالج</h2>
+              <p class="text-xs text-emerald-400 font-medium">الملف المهني للمعالج</p>
+            </div>
+          </div>
+        </div>
+        <nav class="flex-1 p-4 space-y-1.5">
+          <button class="therapist-nav w-full text-right px-4 py-3.5 rounded-xl text-sm font-bold text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all active bg-emerald-50 text-emerald-600" data-section="dashboard">
+            <i class="fas fa-chart-simple ml-3 w-5 text-center text-emerald-500"></i>إحصائيات الأداء
+          </button>
+          <button class="therapist-nav w-full text-right px-4 py-3.5 rounded-xl text-sm font-bold text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all" data-section="schedule">
+            <i class="fas fa-calendar-days ml-3 w-5 text-center text-emerald-500"></i>جدول المواعيد النشطة
+            <span id="pendingBadge" class="mr-auto float-left px-2 py-0.5 rounded-full bg-red-500 text-white text-xs font-bold hidden">0</span>
+          </button>
+          <button class="therapist-nav w-full text-right px-4 py-3.5 rounded-xl text-sm font-bold text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all" data-section="patients">
+            <i class="fas fa-notes-medical ml-3 w-5 text-center text-emerald-500"></i>السجلات الطبية للمرضى
+          </button>
+          <button class="therapist-nav w-full text-right px-4 py-3.5 rounded-xl text-sm font-bold text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all" data-section="notifications">
+            <i class="fas fa-bell ml-3 w-5 text-center text-emerald-500"></i>صندوق الإشعارات
+            <span id="notifBadge" class="mr-auto float-left px-2 py-0.5 rounded-full bg-red-500 text-white text-xs font-bold hidden">0</span>
+          </button>
+        </nav>
+        <div class="p-4 border-t border-slate-800">
+          <button id="therapistLogout" class="w-full py-3 rounded-xl text-sm font-bold text-red-400 hover:bg-red-950/30 hover:text-red-300 transition-all">
+            <i class="fas fa-sign-out-alt ml-2"></i>تسجيل الخروج
+          </button>
+        </div>
+      </aside>
+
+      <main class="flex-1 overflow-y-auto bg-stone-50 p-8">
+        <!-- Mobile Top Bar -->
+        <div class="lg:hidden flex items-center justify-between bg-white border border-stone-200/60 p-4 mb-6 rounded-2xl shadow-sm">
+          <button onclick="toggleMobileSidebar()" class="w-10 h-10 rounded-xl bg-stone-50 text-stone-600 flex items-center justify-center border border-stone-200 hover:bg-stone-100 transition-all">
+            <i class="fas fa-bars"></i>
+          </button>
+          <span class="font-black text-stone-800 text-sm">لوحة تحكم المعالج</span>
+          <div class="w-10"></div>
+        </div>
+        <!-- Dashboard Section -->
+        <div id="therapistDashboardSection" class="therapist-section">
+          <div class="flex items-center justify-between mb-8">
+            <div>
+              <h1 class="text-3xl font-extrabold text-stone-800 mb-1">لوحة أداء المعالج</h1>
+              <p class="text-sm text-stone-500 font-medium">تتبع إحصائيات الدورة الحالية والعمولات المكتسبة</p>
+            </div>
+            <div class="flex gap-2">
+              <button class="period-btn px-4 py-2 rounded-xl text-sm font-bold transition-all active bg-emerald-600 text-white" data-period="weekly">أسبوعي</button>
+              <button class="period-btn px-4 py-2 rounded-xl text-sm font-bold text-stone-600 hover:bg-stone-100" data-period="monthly">شهري</button>
+              <button class="period-btn px-4 py-2 rounded-xl text-sm font-bold text-stone-600 hover:bg-stone-100" data-period="yearly">سنوي</button>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="glass-card p-6 bg-white border-r-4 border-emerald-500">
+              <span class="text-stone-500 text-sm font-bold">إجمالي دخل الجلسات المكتملة</span>
+              <h3 class="text-3xl font-black text-stone-800 mt-2"><span id="therapistTotalIncome">0</span> <span class="text-sm font-bold text-stone-400">DA</span></h3>
+            </div>
+            <div class="glass-card p-6 bg-white border-r-4 border-teal-500">
+              <span class="text-stone-500 text-sm font-bold">عدد الحجوزات المكتملة</span>
+              <h3 class="text-3xl font-black text-stone-800 mt-2" id="therapistTotalBookings">0</h3>
+            </div>
+            <div class="glass-card p-6 bg-white border-r-4 border-amber-600">
+              <span class="text-stone-500 text-sm font-bold">صافي مستحقاتك من العمولات</span>
+              <h3 class="text-3xl font-black text-stone-800 mt-2"><span id="therapistNetProfit">0</span> <span class="text-sm font-bold text-stone-400">DA</span></h3>
+            </div>
+          </div>
+        </div>
+
+        <!-- Schedule Section -->
+        <div id="therapistScheduleSection" class="therapist-section hidden">
+          <div class="flex items-center justify-between mb-8">
+            <div>
+              <h1 class="text-3xl font-extrabold text-stone-800 mb-1">مواعيدك العلاجية النشطة</h1>
+              <p class="text-sm text-stone-500 font-medium">جدول المواعيد والتحكم في إتمام الجلسات واستلام الدفعات</p>
+            </div>
+          </div>
+          <div class="glass-card p-6 bg-white mb-8">
+            <h3 class="font-extrabold text-stone-800 text-lg mb-4"><i class="fas fa-spinner text-teal-600 ml-2 animate-spin"></i>المواعيد النشطة اليوم</h3>
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="text-stone-500 border-b border-stone-100">
+                    <th class="text-right pb-3 font-bold">الزبون</th>
+                    <th class="text-right pb-3 font-bold">الخدمة</th>
+                    <th class="text-right pb-3 font-bold">التاريخ</th>
+                    <th class="text-right pb-3 font-bold">التوقيت</th>
+                    <th class="text-right pb-3 font-bold">سعر الجلسة الأساسي</th>
+                    <th class="text-right pb-3 font-bold">كؤوس الحجامة المستعملة</th>
+                    <th class="text-right pb-3 text-left font-bold">إجراءات الحجز</th>
+                  </tr>
+                </thead>
+                <tbody id="therapistActiveBookings"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="glass-card p-6 bg-white">
+            <h3 class="font-extrabold text-stone-800 text-lg mb-4"><i class="fas fa-check-circle text-emerald-500 ml-2"></i>سجل الجلسات العلاجية المكتملة</h3>
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="text-stone-500 border-b border-stone-100">
+                    <th class="text-right pb-3 font-bold">الزبون</th>
+                    <th class="text-right pb-3 font-bold">الخدمة المقدمة</th>
+                    <th class="text-right pb-3 font-bold">تاريخ الإكمال</th>
+                    <th class="text-right pb-3 font-bold">المبلغ المقبوض</th>
+                    <th class="text-right pb-3 font-bold">تقييم الزبون</th>
+                  </tr>
+                </thead>
+                <tbody id="therapistCompletedBookings"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Patients Section -->
+        <div id="therapistPatientsSection" class="therapist-section hidden">
+          <div class="flex items-center justify-between mb-8">
+            <div>
+              <h1 class="text-3xl font-extrabold text-stone-800 mb-1">السجلات الطبية للمرضى</h1>
+              <p class="text-sm text-stone-500 font-medium">تسجيل القياسات الحيوية للمرضى، وتدوين الملاحظات وتنزيل التقارير</p>
+            </div>
+          </div>
+          <div class="glass-card p-6 bg-white overflow-x-auto mb-8">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="text-stone-500 border-b border-stone-100">
+                  <th class="text-right pb-3 font-bold">اسم المريض</th>
+                  <th class="text-right pb-3 font-bold">الهاتف</th>
+                  <th class="text-right pb-3 font-bold">عدد الجلسات</th>
+                  <th class="text-right pb-3 font-bold">آخر جلسة</th>
+                  <th class="text-right pb-3 text-left font-bold">الإجراءات والتقارير</th>
+                </tr>
+              </thead>
+              <tbody id="patientsTable"></tbody>
+            </table>
+          </div>
+          <div class="glass-card p-6 bg-white">
+            <h3 class="font-extrabold text-stone-800 text-lg mb-4 border-b border-stone-100 pb-3"><i class="fas fa-file-invoice-dollar text-emerald-600 ml-2"></i>إضافة سجل وقياسات طبية للمريض</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-sm font-bold text-stone-600 mb-1.5">اختر المريض</label>
+                <select id="healthPatient" class="w-full px-4 py-3 rounded-xl border border-stone-200 bg-white outline-none text-sm"></select>
+              </div>
+              <div>
+                <label class="block text-sm font-bold text-stone-600 mb-1.5">مستوى السكر في الدم (mg/dL)</label>
+                <input type="number" id="healthSugar" class="w-full px-4 py-3 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm">
+              </div>
+              <div>
+                <label class="block text-sm font-bold text-stone-600 mb-1.5">الطول (cm)</label>
+                <input type="number" id="healthHeight" class="w-full px-4 py-3 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm">
+              </div>
+              <div>
+                <label class="block text-sm font-bold text-stone-600 mb-1.5">الوزن (kg)</label>
+                <input type="number" id="healthWeight" class="w-full px-4 py-3 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm">
+              </div>
+              <div>
+                <label class="block text-sm font-bold text-stone-600 mb-1.5">الأكسجين (%)</label>
+                <input type="number" id="healthOxygen" class="w-full px-4 py-3 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm">
+              </div>
+              <div>
+                <label class="block text-sm font-bold text-stone-600 mb-1.5">ملاحظات التشخيص الطبية</label>
+                <textarea id="healthNotes" rows="1" class="w-full px-4 py-3 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm leading-relaxed"></textarea>
+              </div>
+              <div>
+                <label class="block text-sm font-bold text-stone-600 mb-1.5">تحميل تحاليل طبية للمريض (اختياري)</label>
+                <input type="file" accept="image/*" id="healthTestFile" onchange="compressMedicalTest(this)" class="w-full text-sm text-stone-500 file:ml-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
+                <input type="hidden" id="healthTestData">
+              </div>
+            </div>
+            <button onclick="saveHealthRecord()" class="mt-6 px-6 py-4 rounded-xl bg-emerald-600 text-white font-bold text-sm hover:bg-emerald-700 transition-all shadow-md">
+              <i class="fas fa-save ml-2"></i>حفظ السجل الطبي
+            </button>
+          </div>
+          <div class="mt-6 glass-card p-6 bg-white">
+            <h3 class="font-extrabold text-stone-800 text-lg mb-4"><i class="fas fa-book-medical text-teal-600 ml-2"></i>أحدث التقارير الطبية المدونة</h3>
+            <div id="healthRecordsList" class="space-y-4 divide-y divide-stone-100"></div>
+          </div>
+        </div>
+
+        <!-- Notifications Section -->
+        <div id="therapistNotificationsSection" class="therapist-section hidden">
+          <div class="flex items-center justify-between mb-8">
+            <div>
+              <h1 class="text-3xl font-extrabold text-stone-800 mb-1">صندوق الإشعارات الواردة</h1>
+              <p class="text-sm text-stone-500 font-medium">تنبيهات فورية للتسويات المالية والخصومات والإشعارات الإدارية</p>
+            </div>
+            <button onclick="clearNotifications()" class="px-4 py-3 rounded-xl bg-stone-100 text-stone-600 text-sm font-bold hover:bg-stone-200 transition-all">
+              <i class="fas fa-check-double ml-2"></i>تحديد الكل كمقروء
+            </button>
+          </div>
+          <div class="space-y-3" id="notificationsList"></div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- ====== CUSTOMER VIEW ====== -->
+  <div id="customerView" class="view">
+    <div class="min-h-screen bg-stone-50">
+      <!-- Navbar -->
+      <nav class="bg-white/80 backdrop-blur-md border-b border-stone-100 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center shadow-md">
+              <i class="fas fa-leaf text-white text-base"></i>
+            </div>
+            <span class="font-black text-stone-800 text-base">مركز الزمرد الاستشفائي</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <button id="customerAuthBtn" onclick="showCustomerAuth()" class="px-5 py-2.5 rounded-xl bg-teal-600 text-white text-xs font-bold hover:bg-teal-700 transition-all shadow-md shadow-teal-600/10">
+              <i class="fas fa-user ml-2"></i>تسجيل / دخول
+            </button>
+            <button id="customerDashboardBtn" onclick="showCustomerDashboard()" class="px-5 py-2.5 rounded-xl bg-emerald-600 text-white text-xs font-bold hover:bg-emerald-700 transition-all hidden shadow-md">
+              <i class="fas fa-user-circle ml-2"></i>حسابي الشخصي
+            </button>
+            <button id="customerLogoutBtn" onclick="customerLogout()" class="px-3.5 py-2.5 rounded-xl text-stone-500 text-xs hover:bg-stone-100 transition-all hidden border border-stone-200">
+              <i class="fas fa-sign-out-alt"></i>
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Hero -->
+      <section class="relative overflow-hidden py-24 text-center" style="background: linear-gradient(135deg, #0f766e 0%, #0d9488 50%, #115e59 100%);">
+        <div class="max-w-4xl mx-auto px-6 relative z-10">
+          <div id="customerHeroLogo" class="w-24 h-24 mx-auto mb-6 rounded-3xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center overflow-hidden shadow-2xl transition-transform hover:scale-105">
+            <i class="fas fa-leaf text-teal-200 text-4xl"></i>
+          </div>
+          <h1 class="text-3xl md:text-5xl font-black text-white mb-4 tracking-wide" id="customerHeroTitle">مركز الزمرد للحجامة والعناية الجسدية</h1>
+          <p class="text-teal-50 text-base md:text-lg max-w-2xl mx-auto leading-relaxed" id="customerHeroBio">رعاية متكاملة لصحتك الجسدية بحجامة علاجية احترافية ومساج عضوي دافئ</p>
+        </div>
+        <div class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-stone-50"></div>
+      </section>
+
+      <!-- Working Hours & Quick Info -->
+      <section class="max-w-6xl mx-auto px-6 -mt-10 relative z-20">
+        <div class="glass-card p-6 bg-white rounded-3xl grid grid-cols-1 md:grid-cols-3 gap-6 shadow-xl border border-teal-500/5">
+          <div class="flex items-center gap-4 p-2 rounded-2xl hover:bg-stone-50 transition-all">
+            <div class="w-12 h-12 rounded-2xl bg-teal-50 flex items-center justify-center flex-shrink-0">
+              <i class="fas fa-clock text-teal-600 text-lg"></i>
+            </div>
+            <div>
+              <p class="text-xs text-stone-400 font-bold">ساعات العمل الرسمية</p>
+              <p class="font-bold text-stone-800 text-sm mt-0.5" id="customerHours">السبت - الخميس 09:00 - 20:00</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-4 p-2 rounded-2xl hover:bg-stone-50 transition-all">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center flex-shrink-0">
+              <i class="fas fa-map-marker-alt text-emerald-600 text-lg"></i>
+            </div>
+            <div>
+              <p class="text-xs text-stone-400 font-bold">موقع ومقر المركز</p>
+              <a id="customerMapLink" href="#" target="_blank" class="font-bold text-emerald-600 text-sm mt-0.5 hover:underline block">اضغط للعرض على الخريطة <i class="fas fa-external-link-alt text-2xs mr-1"></i></a>
+            </div>
+          </div>
+          <div class="flex items-center gap-4 p-2 rounded-2xl hover:bg-stone-50 transition-all">
+            <div class="w-12 h-12 rounded-2xl bg-green-50 flex items-center justify-center flex-shrink-0">
+              <i class="fab fa-whatsapp text-green-600 text-xl"></i>
+            </div>
+            <div>
+              <p class="text-xs text-stone-400 font-bold">الاستفسارات عبر واتساب</p>
+              <a id="customerWhatsappLink" href="#" target="_blank" class="font-bold text-green-600 text-sm mt-0.5 hover:underline block">راسلنا للحجز الفوري <i class="fas fa-chevron-left text-2xs mr-1"></i></a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Social Media handles -->
+      <section class="max-w-6xl mx-auto px-6 mt-8">
+        <div class="flex justify-center gap-4">
+          <a id="customerFacebook" href="#" target="_blank" class="w-12 h-12 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 hover:bg-blue-100 hover:scale-105 transition-all hidden">
+            <i class="fab fa-facebook-f text-base"></i>
+          </a>
+          <a id="customerInstagram" href="#" target="_blank" class="w-12 h-12 rounded-full bg-pink-50 border border-pink-100 flex items-center justify-center text-pink-600 hover:bg-pink-100 hover:scale-105 transition-all hidden">
+            <i class="fab fa-instagram text-base"></i>
+          </a>
+        </div>
+      </section>
+
+      <!-- Services List -->
+      <section class="max-w-6xl mx-auto px-6 py-16">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-extrabold text-stone-800 mb-2">جلساتنا الاستشفائية المتاحة</h2>
+          <p class="text-stone-500 font-medium text-sm max-w-md mx-auto">اختر الجلسة العلاجية التي تناسب احتياجاتك البدنية، وقم بالحجز الفوري بكل يسر وسهولة</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="customerServicesGrid"></div>
+      </section>
+
+      <!-- Patient Dashboard (after login) -->
+      <div id="customerDashboardSection" class="max-w-6xl mx-auto px-6 py-8 hidden">
+        <h2 class="text-2xl font-extrabold text-stone-800 mb-6 border-b border-stone-200 pb-3"><i class="fas fa-user-circle text-teal-600 ml-2"></i>ملفي الشخصي وحجوزاتي</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div class="glass-card p-6 bg-white lg:col-span-2 shadow-md">
+            <h3 class="font-extrabold text-stone-800 text-lg mb-4"><i class="fas fa-calendar-check text-emerald-600 ml-2"></i>تاريخ الحجوزات الخاصة بي</h3>
+            <div id="customerMyBookings" class="space-y-3"></div>
+          </div>
+          <div class="glass-card p-6 bg-white shadow-md">
+            <h3 class="font-extrabold text-stone-800 text-base mb-4"><i class="fas fa-star text-amber-500 ml-2"></i>تقييم الجلسات المكتملة</h3>
+            <div id="customerFeedbackSection" class="space-y-4"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end #app -->
+
+<!-- ====== BOOKING DETAILS MODAL (Admin Viewer) ====== -->
+<div id="bookingDetailsModal" class="modal-overlay hidden">
+  <div class="modal-content glass-card p-8 rounded-3xl max-w-2xl mx-auto bg-white shadow-2xl relative" style="max-height: 90vh; overflow-y: auto;">
+    <button onclick="closeModal('bookingDetailsModal')" class="absolute top-4 left-4 w-9 h-9 rounded-xl bg-stone-100 text-stone-500 hover:bg-stone-200 flex items-center justify-center transition-all">
+      <i class="fas fa-times"></i>
+    </button>
+    <h3 class="text-2xl font-black text-stone-800 mb-6 border-b border-stone-100 pb-3"><i class="fas fa-file-medical text-teal-600 ml-2"></i>استمارة تفاصيل الحجز والحالة الطبية</h3>
+    
+    <div class="space-y-6" id="adminDetailedBookingContent"></div>
+    
+    <div class="flex gap-3 mt-8 pt-4 border-t border-stone-100">
+      <button id="detailPrintBtn" class="flex-1 py-3.5 rounded-xl bg-teal-600 text-white font-bold text-sm hover:bg-teal-700 transition-all shadow-md">
+        <i class="fas fa-print ml-2"></i>طباعة ملف الاستمارة الطبية
+      </button>
+      <button onclick="closeModal('bookingDetailsModal')" class="px-6 py-3.5 rounded-xl bg-stone-100 text-stone-600 font-bold text-sm hover:bg-stone-200 transition-all">
+        إغلاق
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ====== CUSTOMER HISTORY MODAL (Admin Viewer) ====== -->
+<div id="customerHistoryModal" class="modal-overlay hidden">
+  <div class="modal-content glass-card p-8 rounded-3xl max-w-3xl mx-auto bg-white shadow-2xl relative" style="max-height: 90vh; overflow-y: auto;">
+    <button onclick="closeModal('customerHistoryModal')" class="absolute top-4 left-4 w-9 h-9 rounded-xl bg-stone-100 text-stone-500 hover:bg-stone-200 flex items-center justify-center transition-all z-10">
+      <i class="fas fa-times"></i>
+    </button>
+    <h3 class="text-2xl font-black text-stone-800 mb-6 border-b border-stone-100 pb-3" id="historyModalTitle"><i class="fas fa-id-card text-teal-600 ml-2"></i>السجل الطبي والزيارات للزبون</h3>
+    
+    <div class="space-y-6" id="adminCustomerHistoryContent"></div>
+    
+    <div class="flex gap-3 mt-8 pt-4 border-t border-stone-100">
+      <button id="historyPrintBtn" class="flex-1 py-3.5 rounded-xl bg-teal-600 text-white font-bold text-sm hover:bg-teal-700 transition-all shadow-md">
+        <i class="fas fa-print ml-2"></i>طباعة ملف المريض الشامل
+      </button>
+      <button onclick="closeModal('customerHistoryModal')" class="px-6 py-3.5 rounded-xl bg-stone-100 text-stone-600 font-bold text-sm hover:bg-stone-200 transition-all">
+        إغلاق
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ====== QR LINK MODAL ====== -->
+<div id="qrModal" class="modal-overlay hidden">
+  <div class="modal-content glass-card p-8 rounded-3xl max-w-md mx-auto bg-white shadow-2xl">
+    <div class="text-center mb-6">
+      <h3 class="text-xl font-bold text-stone-800 mb-2">رابط واجهة الزبائن</h3>
+      <p class="text-stone-400 text-sm font-medium">شارك هذا الرابط المباشر مع الزبائن ليتمكنوا من حجز الجلسات بأنفسهم</p>
+    </div>
+    <div class="bg-stone-50 rounded-2xl p-4 mb-6 border border-stone-200">
+      <input type="text" id="customerLinkUrl" class="w-full bg-transparent text-sm text-stone-700 text-center font-bold outline-none" readonly>
+    </div>
+    <div class="flex gap-3">
+      <button onclick="copyCustomerLink()" class="flex-1 py-3.5 rounded-xl bg-teal-600 text-white font-bold text-sm hover:bg-teal-700 transition-all shadow-md">
+        <i class="fas fa-copy ml-2"></i>نسخ الرابط المباشر
+      </button>
+      <button onclick="closeModal('qrModal')" class="flex-1 py-3.5 rounded-xl bg-stone-100 text-stone-600 font-bold text-sm hover:bg-stone-200 transition-all">
+        إغلاق
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ====== EXPENSE MODAL ====== -->
+<div id="expenseModal" class="modal-overlay hidden">
+  <div class="modal-content glass-card p-8 rounded-3xl max-w-md mx-auto bg-white shadow-2xl">
+    <h3 class="text-xl font-bold text-stone-800 mb-6 border-b border-stone-100 pb-3">إضافة مصروف ثابت جديد</h3>
+    <div class="space-y-4">
+      <div>
+        <label class="block text-sm font-bold text-stone-600 mb-1.5">نوع المصروف (البيان)</label>
+        <select id="expenseName" class="w-full px-4 py-3.5 rounded-xl border border-stone-200 bg-white outline-none text-sm font-bold">
+          <option value="الكراء">الكراء</option>
+          <option value="الكهرباء">الكهرباء</option>
+          <option value="الماء">الماء</option>
+          <option value="رواتب الموظفين">رواتب الموظفين</option>
+          <option value="الغاز">الغاز</option>
+          <option value="الإنترنت">الإنترنت</option>
+          <option value="الصيانة">الصيانة</option>
+          <option value="أخرى">أخرى</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-bold text-stone-600 mb-1.5">قيمة المبلغ (DA)</label>
+        <input type="number" id="expenseAmount" class="w-full px-4 py-3.5 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm font-bold">
+      </div>
+      <div>
+        <label class="block text-sm font-bold text-stone-600 mb-1.5">الشهر المستحق</label>
+        <select id="expenseMonth" class="w-full px-4 py-3.5 rounded-xl border border-stone-200 bg-white outline-none text-sm font-bold">
+          <option value="جانفي">جانفي</option>
+          <option value="فيفري">فيفري</option>
+          <option value="مارس">مارس</option>
+          <option value="أفريل">أفريل</option>
+          <option value="ماي">ماي</option>
+          <option value="جوان">جوان</option>
+          <option value="جويلية">جويلية</option>
+          <option value="أوت">أوت</option>
+          <option value="سبتمبر">سبتمبر</option>
+          <option value="أكتوبر">أكتوبر</option>
+          <option value="نوفمبر">نوفمبر</option>
+          <option value="ديسمبر">ديسمبر</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-bold text-stone-600 mb-1.5">السنة</label>
+        <input type="number" id="expenseYear" value="2026" class="w-full px-4 py-3.5 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm font-bold">
+      </div>
+      <div class="flex gap-2 pt-4">
+        <button onclick="saveExpense()" class="flex-1 py-4 rounded-xl bg-teal-600 text-white font-bold text-sm hover:bg-teal-700 transition-all shadow-md">
+          <i class="fas fa-save ml-2"></i>حفظ السجل
+        </button>
+        <button onclick="closeModal('expenseModal')" class="px-6 py-4 rounded-xl bg-stone-100 text-stone-600 font-bold text-sm hover:bg-stone-200 transition-all">
+          إلغاء
+        </button>
+      </div>
+      <input type="hidden" id="editExpenseId">
+    </div>
+  </div>
+</div>
+
+<!-- ====== THERAPIST MODAL ====== -->
+<div id="therapistModal" class="modal-overlay hidden">
+  <div class="modal-content glass-card p-8 rounded-3xl max-w-md mx-auto bg-white shadow-2xl">
+    <h3 class="text-xl font-bold text-stone-800 mb-6 border-b border-stone-100 pb-3" id="therapistModalTitle">إضافة معالج جديد</h3>
+    <div class="space-y-4">
+      <div>
+        <label class="block text-sm font-bold text-stone-600 mb-1.5">الاسم الكامل</label>
+        <input type="text" id="therapistNameInput" class="w-full px-4 py-3.5 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm">
+      </div>
+      <div>
+        <label class="block text-sm font-bold text-stone-600 mb-1.5">اسم المستخدم (لتسجيل الدخول)</label>
+        <input type="text" id="therapistUsername" class="w-full px-4 py-3.5 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm">
+      </div>
+      <div>
+        <label class="block text-sm font-bold text-stone-600 mb-1.5">كلمة المرور</label>
+        <input type="text" id="therapistPassword" class="w-full px-4 py-3.5 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm">
+      </div>
+      <div>
+        <label class="block text-sm font-bold text-stone-600 mb-1.5">نسبة عمولة المعالج من الجلسة (%)</label>
+        <input type="number" id="therapistCommission" class="w-full px-4 py-3.5 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm font-bold">
+      </div>
+      <div>
+        <label class="block text-sm font-bold text-stone-600 mb-1.5">رقم الواتساب</label>
+        <input type="text" id="therapistWhatsapp" class="w-full px-4 py-3.5 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm" placeholder="مثال: 213XXXXXXXXX">
+      </div>
+      <div>
+        <label class="block text-sm font-bold text-stone-600 mb-1.5">الجنس</label>
+        <select id="therapistGender" class="w-full px-4 py-3.5 rounded-xl border border-stone-200 bg-white outline-none text-sm font-bold">
+          <option value="ذكر">ذكر (معالج للرجال)</option>
+          <option value="أنثى">أنثى (معالجة للنساء)</option>
+        </select>
+      </div>
+      <div class="flex gap-2 pt-4">
+        <button onclick="saveTherapist()" class="flex-1 py-4 rounded-xl bg-teal-600 text-white font-bold text-sm hover:bg-teal-700 transition-all shadow-md">
+          <i class="fas fa-save ml-2"></i>حفظ المعلومات
+        </button>
+        <button onclick="closeModal('therapistModal')" class="px-6 py-4 rounded-xl bg-stone-100 text-stone-600 font-bold text-sm hover:bg-stone-200 transition-all">
+          إلغاء
+        </button>
+      </div>
+      <input type="hidden" id="editTherapistId">
+    </div>
+  </div>
+</div>
+
+<!-- ====== INVENTORY MODAL ====== -->
+<div id="inventoryModal" class="modal-overlay hidden">
+  <div class="modal-content glass-card p-8 rounded-3xl max-w-md mx-auto bg-white shadow-2xl">
+    <h3 class="text-xl font-bold text-stone-800 mb-6 border-b border-stone-100 pb-3">إضافة منتج للمخزون</h3>
+    <div class="space-y-4">
+      <div>
+        <label class="block text-sm font-bold text-stone-600 mb-1.5">اسم المنتج</label>
+        <input type="text" id="invName" class="w-full px-4 py-3.5 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm">
+      </div>
+      <div>
+        <label class="block text-sm font-bold text-stone-600 mb-1.5">الكمية المتوفرة</label>
+        <input type="number" id="invQty" class="w-full px-4 py-3.5 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm font-bold">
+      </div>
+      <div>
+        <label class="block text-sm font-bold text-stone-600 mb-1.5">الحجم (مل) (اختياري)</label>
+        <input type="number" id="invVolume" class="w-full px-4 py-3.5 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm font-bold">
+      </div>
+      <div>
+        <label class="block text-sm font-bold text-stone-600 mb-1.5">سعر تكلفة المنتج (DA)</label>
+        <input type="number" id="invCost" class="w-full px-4 py-3.5 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm font-bold">
+      </div>
+      <div class="flex gap-2 pt-4">
+        <button onclick="saveInventory()" class="flex-1 py-4 rounded-xl bg-teal-600 text-white font-bold text-sm hover:bg-teal-700 transition-all shadow-md">
+          <i class="fas fa-save ml-2"></i>حفظ السجل
+        </button>
+        <button onclick="closeModal('inventoryModal')" class="px-6 py-4 rounded-xl bg-stone-100 text-stone-600 font-bold text-sm hover:bg-stone-200 transition-all">
+          إلغاء
+        </button>
+      </div>
+      <input type="hidden" id="editInvId">
+    </div>
+  </div>
+</div>
+
+<!-- ====== SERVICE MODAL ====== -->
+<div id="serviceModal" class="modal-overlay hidden">
+  <div class="modal-content glass-card p-8 rounded-3xl max-w-lg mx-auto bg-white shadow-2xl" style="max-height: 90vh; overflow-y: auto;">
+    <h3 class="text-xl font-bold text-stone-800 mb-6 border-b border-stone-100 pb-3">إضافة خدمة جديدة للمركز</h3>
+    <div class="space-y-4">
+      <div>
+        <label class="block text-sm font-bold text-stone-600 mb-1.5">اسم الخدمة العلاجية</label>
+        <input type="text" id="serviceName" class="w-full px-4 py-3.5 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm">
+      </div>
+      <div>
+        <label class="block text-sm font-bold text-stone-600 mb-1.5">صورة توضيحية للخدمة</label>
+        <input type="file" accept="image/*" id="serviceImage" onchange="compressServiceImage(this)" class="w-full text-sm text-stone-500 file:ml-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-teal-50 file:text-teal-700">
+        <input type="hidden" id="serviceImageData">
+        <div id="serviceImagePreview" class="mt-3 w-24 h-24 rounded-2xl bg-stone-100 flex items-center justify-center overflow-hidden border border-stone-200 hidden">
+          <img id="serviceImagePreviewImg" class="w-full h-full object-cover">
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-bold text-stone-600 mb-1.5">سعر الجلسة الأساسي (DA)</label>
+        <input type="number" id="servicePrice" class="w-full px-4 py-3.5 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm font-bold">
+      </div>
+      <div>
+        <label class="block text-sm font-bold text-stone-600 mb-1.5">وصف الخدمة ومميزاتها</label>
+        <textarea id="serviceDesc" rows="2" class="w-full px-4 py-3 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm"></textarea>
+      </div>
+      <div class="flex items-center gap-3 py-2">
+        <input type="checkbox" id="serviceIsCupping" onchange="toggleCupPrice()" class="w-5 h-5 rounded border-stone-300 text-teal-600 focus:ring-teal-500">
+        <label for="serviceIsCupping" class="text-sm font-bold text-stone-700">هذه الجلسة تستهلك أكواب حجامة</label>
+      </div>
+      <div id="cupPriceField" class="hidden">
+        <label class="block text-sm font-bold text-stone-600 mb-1.5">سعر الكأس الواحد الإضافي (DA)</label>
+        <input type="number" id="serviceCupPrice" class="w-full px-4 py-3.5 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm font-bold">
+      </div>
+      <div>
+        <label class="block text-sm font-bold text-stone-600 mb-1.5">ربط استهلاك المنتجات والمخزون</label>
+        <div id="inventoryMapping" class="space-y-2"></div>
+        <button onclick="addInventoryMappingRow()" class="mt-3 text-xs font-bold text-teal-600 hover:underline">
+          <i class="fas fa-plus ml-1"></i>ربط منتج جديد للخدمة
+        </button>
+      </div>
+      <div class="flex gap-2 pt-4">
+        <button onclick="saveService()" class="flex-1 py-4 rounded-xl bg-teal-600 text-white font-bold text-sm hover:bg-teal-700 transition-all shadow-md">
+          <i class="fas fa-save ml-2"></i>حفظ الخدمة العلاجية
+        </button>
+        <button onclick="closeModal('serviceModal')" class="px-6 py-4 rounded-xl bg-stone-100 text-stone-600 font-bold text-sm hover:bg-stone-200 transition-all">
+          إلغاء
+        </button>
+      </div>
+      <input type="hidden" id="editServiceId">
+    </div>
+  </div>
+</div>
+
+<!-- ====== DEDUCTION MODAL ====== -->
+<div id="deductionModal" class="modal-overlay hidden">
+  <div class="modal-content glass-card p-8 rounded-3xl max-w-md mx-auto bg-white shadow-2xl">
+    <h3 class="text-xl font-bold text-stone-800 mb-6 border-b border-stone-100 pb-3">تسجيل خصم إداري من مستحقات المعالج</h3>
+    <div class="space-y-4">
+      <div class="bg-red-50 text-red-800 text-xs font-bold p-3.5 rounded-xl border border-red-200 leading-relaxed" id="deductionTherapistName">المعالج: </div>
+      <div>
+        <label class="block text-sm font-bold text-stone-600 mb-1.5">المبلغ المطلوب خصمه (DA)</label>
+        <input type="number" id="deductionAmount" class="w-full px-4 py-3.5 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm font-bold">
+      </div>
+      <div>
+        <label class="block text-sm font-bold text-stone-600 mb-1.5">سبب الخصم والتسوية الإدارية</label>
+        <textarea id="deductionReason" rows="2" class="w-full px-4 py-3 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm"></textarea>
+      </div>
+      <div class="flex gap-2 pt-4">
+        <button onclick="processDeduction()" class="flex-1 py-4 rounded-xl bg-red-600 text-white font-bold text-sm hover:bg-red-700 transition-all shadow-md">
+          <i class="fas fa-minus-circle ml-2"></i>تأكيد الخصم المالي
+        </button>
+        <button onclick="closeModal('deductionModal')" class="px-6 py-4 rounded-xl bg-stone-100 text-stone-600 font-bold text-sm hover:bg-stone-200 transition-all">
+          إلغاء
+        </button>
+      </div>
+      <input type="hidden" id="deductionTherapistId">
+    </div>
+  </div>
+</div>
+
+<!-- ====== CUSTOMER AUTH MODAL ====== -->
+<div id="customerAuthModal" class="modal-overlay hidden">
+  <div class="modal-content glass-card p-8 rounded-3xl max-w-md mx-auto bg-white shadow-2xl">
+    <h3 class="text-xl font-bold text-stone-800 mb-6 border-b border-stone-100 pb-3" id="customerAuthTitle">تسجيل دخول الزبون</h3>
+    <div class="flex mb-6 bg-stone-100 rounded-xl p-1">
+      <button class="customer-auth-toggle flex-1 py-2.5 rounded-xl text-xs font-bold transition-all active" data-auth="login">تسجيل دخول</button>
+      <button class="customer-auth-toggle flex-1 py-2.5 rounded-xl text-xs font-bold text-stone-500 transition-all" data-auth="register">إنشاء حساب جديد</button>
+    </div>
+    
+    <div id="customerLoginForm" class="space-y-4">
+      <div>
+        <label class="block text-sm font-bold text-stone-600 mb-1.5">اسم المستخدم</label>
+        <input type="text" id="custLoginUser" class="w-full px-4 py-3.5 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm">
+      </div>
+      <div>
+        <label class="block text-sm font-bold text-stone-600 mb-1.5">كلمة المرور</label>
+        <input type="password" id="custLoginPass" class="w-full px-4 py-3.5 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm">
+      </div>
+      <button onclick="customerLogin()" class="w-full py-4 rounded-xl bg-teal-600 text-white font-bold text-sm hover:bg-teal-700 transition-all shadow-md shadow-teal-600/10">تسجيل الدخول</button>
+    </div>
+    
+    <div id="customerRegisterForm" class="space-y-4 hidden">
+      <div>
+        <label class="block text-sm font-bold text-stone-600 mb-1.5">الاسم الكامل</label>
+        <input type="text" id="custRegName" class="w-full px-4 py-3.5 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm" placeholder="الاسم الحقيقي لملفات الاستشفاء">
+      </div>
+      <div>
+        <label class="block text-sm font-bold text-stone-600 mb-1.5">رقم الهاتف الجوال</label>
+        <div class="flex gap-2">
+          <select class="w-24 px-2 py-3.5 rounded-xl border border-stone-200 bg-white outline-none text-xs font-bold" id="custPhoneCode">
+            <option value="+213">+213 (الجزائر)</option>
+            <option value="+212">+212 (المغرب)</option>
+            <option value="+216">+216 (تونس)</option>
+            <option value="+20">+20 (مصر)</option>
+          </select>
+          <input type="text" id="custRegPhone" class="flex-1 px-4 py-3.5 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm font-bold">
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-bold text-stone-600 mb-1.5">الجنس</label>
+        <select id="custRegGender" class="w-full px-4 py-3.5 rounded-xl border border-stone-200 bg-white outline-none text-sm font-bold">
+          <option value="ذكر">ذكر</option>
+          <option value="أنثى">أنثى</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-bold text-stone-600 mb-1.5">اسم المستخدم (المستعار)</label>
+        <input type="text" id="custRegUser" class="w-full px-4 py-3.5 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm">
+      </div>
+      <div>
+        <label class="block text-sm font-bold text-stone-600 mb-1.5">كلمة المرور</label>
+        <input type="password" id="custRegPass" class="w-full px-4 py-3.5 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm">
+      </div>
+      <button onclick="customerRegister()" class="w-full py-4 rounded-xl bg-emerald-600 text-white font-bold text-sm hover:bg-emerald-700 transition-all shadow-md">إنشاء الحساب وتأكيد التسجيل</button>
+    </div>
+    <div id="customerAuthError" class="text-red-500 text-sm font-bold text-center mt-3 hidden"></div>
+  </div>
+</div>
+
+<!-- ====== BOOKING STEP-BY-STEP MODAL ====== -->
+<div id="bookingModal" class="modal-overlay hidden">
+  <div class="modal-content glass-card p-6 rounded-3xl max-w-lg mx-auto bg-white shadow-2xl relative" style="max-height: 90vh; overflow-y: auto;">
+    <button onclick="closeModal('bookingModal')" class="absolute top-4 left-4 w-9 h-9 rounded-xl bg-stone-100 text-stone-500 hover:bg-stone-200 flex items-center justify-center transition-all z-10">
+      <i class="fas fa-times"></i>
+    </button>
+    <!-- Progress Indicator -->
+    <div class="flex items-center justify-center gap-2 mb-6 border-b border-stone-50 pb-4">
+      <div class="step-indicator flex items-center gap-2">
+        <div class="w-8 h-8 rounded-full bg-teal-600 text-white text-xs flex items-center justify-center font-bold" id="step1Badge">1</div>
+        <span class="text-xs text-stone-500">تفاصيل الخدمة</span>
+      </div>
+      <div class="w-8 h-0.5 bg-stone-200" id="stepLine1"></div>
+      <div class="step-indicator flex items-center gap-2">
+        <div class="w-8 h-8 rounded-full bg-stone-200 text-stone-500 text-xs flex items-center justify-center font-bold" id="step2Badge">2</div>
+        <span class="text-xs text-stone-500">التعليمات</span>
+      </div>
+      <div class="w-8 h-0.5 bg-stone-200" id="stepLine2"></div>
+      <div class="step-indicator flex items-center gap-2">
+        <div class="w-8 h-8 rounded-full bg-stone-200 text-stone-500 text-xs flex items-center justify-center font-bold" id="step3Badge">3</div>
+        <span class="text-xs text-stone-500">تأكيد الموعد</span>
+      </div>
+    </div>
+
+    <!-- Step 1: Service Info -->
+    <div id="bookingStep1">
+      <h3 class="text-xl font-extrabold text-stone-800 mb-2" id="bookingServiceName"></h3>
+      <p class="text-stone-500 text-sm mb-4 leading-relaxed" id="bookingServiceDesc"></p>
+      <div class="bg-amber-50 border border-amber-100 rounded-2xl p-4 mb-5">
+        <span class="text-amber-800 block text-xs font-bold mb-1">تكلفة الجلسة المقدرة</span>
+        <p class="text-amber-700 font-black text-2xl"><span id="bookingServicePrice"></span> <span class="text-sm font-bold">DA</span></p>
+      </div>
+      <div id="bookingCupsSection" class="hidden mb-5">
+        <label class="block text-sm font-bold text-stone-600 mb-1.5">عدد أكواب الحجامة المطلوبة</label>
+        <input type="number" id="bookingCupsCount" value="0" min="0" class="w-full px-4 py-3.5 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm font-bold">
+      </div>
+      <button onclick="bookingNext()" class="w-full py-4 rounded-xl bg-teal-600 text-white font-bold text-sm hover:bg-teal-700 transition-all shadow-md">
+        الخطوة التالية: مراجعة الإرشادات الطبية <i class="fas fa-arrow-left mr-2"></i>
+      </button>
+    </div>
+
+    <!-- Step 2: Instructions -->
+    <div id="bookingStep2" class="hidden">
+      <h3 class="text-lg font-bold text-stone-800 mb-4"><i class="fas fa-notes-medical text-teal-600 ml-2"></i>تعليمات هامة قبل الحضور للجلسة</h3>
+      <div class="bg-teal-50/50 border border-teal-200/60 rounded-2xl p-5 mb-5 space-y-3 text-xs text-teal-900 font-bold leading-relaxed">
+        <p><i class="fas fa-check-circle ml-2 text-teal-600"></i>يفضل أن تكون المعدة فارغة تماماً (الصيام لمدة 3 ساعات قبل الحجامة)</p>
+        <p><i class="fas fa-check-circle ml-2 text-teal-600"></i>الامتناع عن التدخين تماماً قبل الجلسة بساعة على الأقل</p>
+        <p><i class="fas fa-check-circle ml-2 text-teal-600"></i>الإكثار من شرب المياه في يوم الجلسة للوقاية من الدوار</p>
+        <p><i class="fas fa-check-circle ml-2 text-teal-600"></i>الاستحمام قبل القدوم وارتداء ملابس واسعة وفضفاضة ومريحة</p>
+        <p><i class="fas fa-check-circle ml-2 text-teal-600"></i>إحضار أي تحاليل طبية أو تقارير تخص سيولة الدم إن وجدت</p>
+      </div>
+      <button onclick="bookingNext()" class="w-full py-4 rounded-xl bg-teal-600 text-white font-bold text-sm hover:bg-teal-700 transition-all shadow-md">
+        الخطوة التالية: إدخال بيانات الموعد <i class="fas fa-arrow-left mr-2"></i>
+      </button>
+    </div>
+
+    <!-- Step 3: Form -->
+    <div id="bookingStep3" class="hidden">
+      <h3 class="text-lg font-bold text-stone-800 mb-4">معلومات الموعد والبيانات الطبية</h3>
+      <div class="space-y-4">
+        <!-- Strict Privacy Information Alert -->
+        <div class="bg-teal-50 border border-teal-200 rounded-xl p-3 flex items-start gap-2.5">
+          <i class="fas fa-shield-halved text-teal-600 mt-0.5"></i>
+          <p class="text-xs text-teal-800 leading-relaxed font-bold">
+            <strong>حفاظاً على الخصوصية والراحة التامة:</strong> لقد تم اختيار وتصفية المعالجين من نفس جنسكم الكريم تلقائياً لتأمين أقصى درجات الطمأنينة أثناء الجلسة.
+          </p>
+        </div>
+
+        <div>
+          <label class="block text-sm font-bold text-stone-600 mb-1.5">العمر الحالي (سنة)</label>
+          <input type="number" id="bookingAge" class="w-full px-4 py-3.5 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm font-bold">
+        </div>
+        <div>
+          <label class="block text-sm font-bold text-stone-600 mb-1.5">تاريخ حجز الجلسة</label>
+          <input type="date" id="bookingDate" class="w-full px-4 py-3.5 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm font-bold">
+        </div>
+        <div>
+          <label class="block text-sm font-bold text-stone-600 mb-1.5">اختر التوقيت المتوفر</label>
+          <select id="bookingTime" class="w-full px-4 py-3.5 rounded-xl border border-stone-200 bg-white outline-none text-sm font-bold"></select>
+        </div>
+        <div>
+          <label class="block text-sm font-bold text-stone-600 mb-1.5">المعالج المفضل (من نفس الجنس)</label>
+          <select id="bookingTherapist" class="w-full px-4 py-3.5 rounded-xl border border-stone-200 bg-white outline-none text-sm font-bold">
+            <option value="">اختيار معالج تلقائي</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-bold text-stone-600 mb-1.5">هل تعاني من أي أمراض مزمنة أو سيولة دم؟</label>
+          <select id="bookingChronic" class="w-full px-4 py-3.5 rounded-xl border border-stone-200 bg-white outline-none text-sm font-bold">
+            <option value="لا">لا، لا أعاني</option>
+            <option value="نعم">نعم، أعاني</option>
+          </select>
+        </div>
+        <div id="bookingChronicDescField" class="hidden">
+          <label class="block text-sm font-bold text-stone-600 mb-1.5">الرجاء توضيح الأمراض أو الأدوية المستعملة</label>
+          <textarea id="bookingChronicDesc" rows="2" class="w-full px-4 py-3 rounded-xl border border-stone-200 bg-stone-50/50 outline-none text-sm"></textarea>
+        </div>
+        <div>
+          <label class="block text-sm font-bold text-stone-600 mb-1.5">تحميل تحاليل طبية إن وجدت (اختياري)</label>
+          <input type="file" accept="image/*" id="bookingTestFile" onchange="compressBookingTest(this)" class="w-full text-sm text-stone-500 file:ml-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-teal-50 file:text-teal-700">
+          <input type="hidden" id="bookingTestData">
+        </div>
+        <div class="flex items-start gap-3 py-2 border-t border-stone-50 mt-4">
+          <input type="checkbox" id="bookingDisclaimer" class="mt-1 w-5 h-5 rounded border-stone-300 text-teal-600 focus:ring-teal-500 flex-shrink-0">
+          <label for="bookingDisclaimer" class="text-xs text-stone-500 font-bold leading-relaxed">
+            أقر بأنني لا أعاني من أمراض تمنعني من الحجامة مثل الفشل الكلوي الحاد أو نزيف الدم الشديد، وأتحمل المسؤولية الطبية الكاملة عن صحة البيانات.
+          </label>
+        </div>
+        <button onclick="confirmBooking()" class="w-full py-4 rounded-xl bg-emerald-600 text-white font-bold text-sm hover:bg-emerald-700 transition-all shadow-md">
+          <i class="fas fa-check-circle ml-2"></i>تأكيد الحجز النهائي وإرسال الموعد
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== TOAST CONTAINER ====== -->
+<div id="toastContainer" class="fixed top-4 left-1/2 -translate-x-1/2 z-[9999] flex flex-col gap-2"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
